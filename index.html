@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TEAR LIST</title>
   <style>
+    /* === 1. БАЗОВЫЕ СТИЛИ И ПЕРЕМЕННЫЕ === */
     :root {
       --bg: #0f1115;
       --surface: #171a21;
@@ -38,7 +39,7 @@
       padding: 20px 16px 64px;
     }
 
-    /* Верхняя навигация */
+    /* === 2. НАВИГАЦИЯ И КНОПКИ === */
     .topbar {
       display: flex;
       align-items: center;
@@ -117,7 +118,7 @@
       border-radius: 8px;
     }
 
-    /* Главная страница */
+    /* === 3. ГЛАВНАЯ И СПИСКИ КАРТОЧЕК === */
     .home-screen {
       display: flex;
       flex-direction: column;
@@ -176,7 +177,6 @@
       transform: translateY(-2px);
     }
 
-    /* Заголовки разделов */
     .page-header {
       margin-bottom: 20px;
     }
@@ -192,7 +192,6 @@
       font-size: 14px;
     }
 
-    /* Списки карточек (строго вертикальный список, 1 карточка на строку) */
     .cards-stack {
       display: flex;
       flex-direction: column;
@@ -261,7 +260,7 @@
       white-space: pre-line;
     }
 
-    /* Админка */
+    /* === 4. АДМИНКА И ФОРМЫ === */
     .admin-box {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -395,6 +394,7 @@
       margin-top: 12px;
       font-size: 14px;
       color: #fca5a5;
+      word-break: break-word;
     }
 
     .empty-state {
@@ -413,30 +413,28 @@
 </head>
 <body>
   <div class="container">
-    <!-- Шапка -->
+    <!-- === РАЗМЕТКА ЭКРАНОВ === -->
     <header class="topbar">
-      <div class="brand" onclick="navigate('home')">TEAR LIST</div>
+      <div class="brand" id="brand-home">TEAR LIST</div>
       <nav class="nav-actions">
-        <button class="btn btn-sm" onclick="navigate('home')">Главная</button>
-        <button class="btn btn-sm" onclick="navigate('regular')">Тир-лист</button>
-        <button class="btn btn-sm" onclick="navigate('custom')">Пользовательский</button>
-        <button class="btn btn-sm" onclick="navigate('admin')">Админка</button>
+        <button type="button" class="btn btn-sm" data-nav="home">Главная</button>
+        <button type="button" class="btn btn-sm" data-nav="regular">Тир-лист</button>
+        <button type="button" class="btn btn-sm" data-nav="custom">Пользовательский</button>
+        <button type="button" class="btn btn-sm" data-nav="admin">Админка</button>
       </nav>
     </header>
 
-    <!-- 1. Главная страница -->
     <section id="view-home" class="home-screen">
       <div>
         <h1 class="home-title">TEAR LIST</h1>
         <p class="home-subtitle">Выбери нужный тир-лист для просмотра</p>
       </div>
       <div class="home-buttons">
-        <button class="big-btn" onclick="navigate('regular')">Тир-лист</button>
-        <button class="big-btn" onclick="navigate('custom')">Пользовательский Тир-лист</button>
+        <button type="button" class="big-btn" data-nav="regular">Тир-лист</button>
+        <button type="button" class="big-btn" data-nav="custom">Пользовательский Тир-лист</button>
       </div>
     </section>
 
-    <!-- 2. Обычный тир-лист -->
     <section id="view-regular" class="hidden">
       <div class="page-header">
         <h2 class="page-title">Тир-лист</h2>
@@ -445,7 +443,6 @@
       <div id="regular-list" class="cards-stack"></div>
     </section>
 
-    <!-- 3. Пользовательский тир-лист -->
     <section id="view-custom" class="hidden">
       <div class="page-header">
         <h2 class="page-title">Пользовательский Тир-лист</h2>
@@ -454,41 +451,38 @@
       <div id="custom-list" class="cards-stack"></div>
     </section>
 
-    <!-- 4. Админка -->
     <section id="view-admin" class="hidden">
       <div class="page-header">
         <h2 class="page-title">Административная панель</h2>
         <p class="page-desc">Управление карточками, фото, цветами и порядком</p>
       </div>
 
-      <!-- Вход по паролю -->
       <div id="admin-login-box" class="admin-box">
         <div class="field">
           <label for="admin-password-input">Пароль администратора</label>
           <input type="password" id="admin-password-input" placeholder="Введите пароль" />
         </div>
         <div style="margin-top: 14px; display: flex; gap: 10px; align-items: center;">
-          <button class="btn btn-primary" onclick="loginAdmin()">Войти</button>
+          <button type="button" id="login-btn" class="btn btn-primary">Войти</button>
         </div>
         <div id="login-error" class="error-msg"></div>
       </div>
 
-      <!-- Панель управления после входа -->
       <div id="admin-panel" class="hidden">
         <div class="admin-box">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; gap: 10px; flex-wrap: wrap;">
             <h3 id="form-heading" style="font-size: 18px;">Добавить карточку</h3>
-            <button class="btn btn-sm" onclick="logoutAdmin()">Выйти</button>
+            <button type="button" id="logout-btn" class="btn btn-sm">Выйти</button>
           </div>
 
-          <form id="card-form" onsubmit="handleSaveCard(event)">
+          <form id="card-form">
             <input type="hidden" id="edit-card-id" />
             <input type="hidden" id="existing-image-url" />
 
             <div class="form-grid form-grid-2">
               <div class="field">
                 <label for="card-type">Тип карточки</label>
-                <select id="card-type" onchange="toggleCardTypeFields()">
+                <select id="card-type">
                   <option value="regular">Обычный тир-лист</option>
                   <option value="custom">Пользовательский тир-лист</option>
                 </select>
@@ -527,18 +521,18 @@
               <label>Цвет текста карточки</label>
               <div class="color-row">
                 <input type="color" id="card-text-color" value="#f3f5f8" />
-                <button type="button" class="preset-dot" style="background:#f3f5f8" onclick="setPresetColor('#f3f5f8')" title="Белый"></button>
-                <button type="button" class="preset-dot" style="background:#fbbf24" onclick="setPresetColor('#fbbf24')" title="Золотой"></button>
-                <button type="button" class="preset-dot" style="background:#34d399" onclick="setPresetColor('#34d399')" title="Зелёный"></button>
-                <button type="button" class="preset-dot" style="background:#60a5fa" onclick="setPresetColor('#60a5fa')" title="Голубой"></button>
-                <button type="button" class="preset-dot" style="background:#f87171" onclick="setPresetColor('#f87171')" title="Красный"></button>
-                <button type="button" class="preset-dot" style="background:#c084fc" onclick="setPresetColor('#c084fc')" title="Фиолетовый"></button>
+                <button type="button" class="preset-dot" style="background:#f3f5f8" data-color="#f3f5f8" title="Белый"></button>
+                <button type="button" class="preset-dot" style="background:#fbbf24" data-color="#fbbf24" title="Золотой"></button>
+                <button type="button" class="preset-dot" style="background:#34d399" data-color="#34d399" title="Зелёный"></button>
+                <button type="button" class="preset-dot" style="background:#60a5fa" data-color="#60a5fa" title="Голубой"></button>
+                <button type="button" class="preset-dot" style="background:#f87171" data-color="#f87171" title="Красный"></button>
+                <button type="button" class="preset-dot" style="background:#c084fc" data-color="#c084fc" title="Фиолетовый"></button>
               </div>
             </div>
 
             <div style="margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap;">
               <button type="submit" id="save-card-btn" class="btn btn-primary">Сохранить карточку</button>
-              <button type="button" class="btn" onclick="resetForm()">Очистить форму</button>
+              <button type="button" id="reset-form-btn" class="btn">Очистить форму</button>
             </div>
 
             <div id="admin-status" class="status-msg"></div>
@@ -546,10 +540,9 @@
           </form>
         </div>
 
-        <!-- Список карточек в админке -->
         <div class="admin-tabs">
-          <button id="tab-admin-regular" class="btn btn-primary btn-sm" onclick="switchAdminTab('regular')">Обычные карточки</button>
-          <button id="tab-admin-custom" class="btn btn-sm" onclick="switchAdminTab('custom')">Пользовательские карточки</button>
+          <button type="button" id="tab-admin-regular" class="btn btn-primary btn-sm">Обычные карточки</button>
+          <button type="button" id="tab-admin-custom" class="btn btn-sm">Пользовательские карточки</button>
         </div>
 
         <div id="admin-cards-list" class="cards-stack"></div>
@@ -558,6 +551,7 @@
   </div>
 
   <script>
+    // --- КОНФИГУРАЦИЯ SUPABASE ---
     const SUPABASE_URL = "https://veklyasmoxzrwdbigsbe.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_wUO5FWkTnDjXKyYxgFRF5A_AN-uB3PD";
     const STORAGE_BUCKET = "card-images";
@@ -576,15 +570,18 @@
         .replace(/'/g, "&#039;");
     }
 
+    // --- НАВИГАЦИЯ ---
     function navigate(view) {
-      location.hash = view === "home" ? "" : view;
-      renderView(view);
+      const target = ["home", "regular", "custom", "admin"].includes(view) ? view : "home";
+      location.hash = target === "home" ? "" : target;
+      renderView(target);
     }
 
     function renderView(view) {
       const views = ["home", "regular", "custom", "admin"];
       views.forEach((v) => {
-        document.getElementById(`view-${v}`).classList.toggle("hidden", v !== view);
+        const el = document.getElementById(`view-${v}`);
+        if (el) el.classList.toggle("hidden", v !== view);
       });
 
       if (view === "regular") renderRegularList();
@@ -592,7 +589,8 @@
       if (view === "admin") initAdminView();
     }
 
-     function apiHeaders(extra = {}) {
+    // --- ЗАПРОСЫ К SUPABASE ---
+    function apiHeaders(extra = {}) {
       return {
         apikey: SUPABASE_ANON_KEY,
         ...extra,
@@ -601,19 +599,62 @@
 
     async function fetchCards() {
       const url = `${SUPABASE_URL}/rest/v1/cards?select=*&order=position.asc,created_at.asc`;
+      const res = await fetch(url, { headers: apiHeaders() });
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(`Ошибка чтения карточек (HTTP ${res.status}): ${text}`);
+      }
+      allCards = await res.json();
+    }
+
+    async function callAdminRpc(action, payload = {}) {
+      const url = `${SUPABASE_URL}/rest/v1/rpc/admin_manage_cards`;
       const res = await fetch(url, {
-        headers: apiHeaders(),
+        method: "POST",
+        headers: apiHeaders({ "Content-Type": "application/json" }),
+        body: JSON.stringify({
+          p_password: adminPassword,
+          p_action: action,
+          p_payload: payload,
+        }),
+      });
+
+      const rawText = await res.text();
+      let data = {};
+      try {
+        data = rawText ? JSON.parse(rawText) : {};
+      } catch {
+        data = { message: rawText };
+      }
+
+      if (!res.ok) {
+        throw new Error(`Ошибка сервера (HTTP ${res.status}): ${data.message || data.error || rawText}`);
+      }
+      return data;
+    }
+
+    async function uploadImageFile(file) {
+      const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+      const fileName = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+
+      const res = await fetch(`${SUPABASE_URL}/storage/v1/object/${STORAGE_BUCKET}/${fileName}`, {
+        method: "POST",
+        headers: apiHeaders({
+          "Content-Type": file.type || "application/octet-stream",
+          "x-upsert": "false",
+        }),
+        body: file,
       });
 
       if (!res.ok) {
         const errText = await res.text();
-        throw new Error(`HTTP ${res.status} (${url}): ${errText || "пустой ответ"}`);
+        throw new Error(`Ошибка загрузки фото (HTTP ${res.status}): ${errText}`);
       }
 
-      allCards = await res.json();
+      return `${SUPABASE_URL}/storage/v1/object/public/${STORAGE_BUCKET}/${fileName}`;
     }
 
-
+    // --- ОТРИСОВКА ПУБЛИЧНЫХ СПИСКОВ ---
     function renderRegularList() {
       const container = document.getElementById("regular-list");
       const items = allCards.filter((c) => c.type === "regular");
@@ -669,57 +710,7 @@
         .join("");
     }
 
-    async function callAdminRpc(action, payload = {}) {
-      const url = `${SUPABASE_URL}/rest/v1/rpc/admin_manage_cards`;
-      const res = await fetch(url, {
-        method: "POST",
-        headers: apiHeaders({
-          "Content-Type": "application/json",
-        }),
-        body: JSON.stringify({
-          p_password: adminPassword,
-          p_action: action,
-          p_payload: payload,
-        }),
-      });
-
-      const rawText = await res.text();
-      let data = {};
-      try {
-        data = rawText ? JSON.parse(rawText) : {};
-      } catch {
-        data = { message: rawText };
-      }
-
-      if (!res.ok) {
-        throw new Error(`RPC HTTP ${res.status}: ${data.message || data.error || rawText || "Ошибка сервера"}`);
-      }
-      return data;
-    }
-
-    async function uploadImageFile(file) {
-      const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
-      const fileName = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-
-      const res = await fetch(`${SUPABASE_URL}/storage/v1/object/${STORAGE_BUCKET}/${fileName}`, {
-        method: "POST",
-        headers: {
-          apikey: SUPABASE_ANON_KEY,
-          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-          "Content-Type": file.type || "application/octet-stream",
-          "x-upsert": "false",
-        },
-        body: file,
-      });
-
-      if (!res.ok) {
-        const errText = await res.text();
-        throw new Error("Ошибка загрузки фото: " + errText);
-      }
-
-      return `${SUPABASE_URL}/storage/v1/object/public/${STORAGE_BUCKET}/${fileName}`;
-    }
-
+    // --- ЛОГИКА АДМИНКИ ---
     async function initAdminView() {
       const loginBox = document.getElementById("admin-login-box");
       const panel = document.getElementById("admin-panel");
@@ -778,10 +769,6 @@
       const isRegular = type === "regular";
       document.getElementById("regular-only-fields").classList.toggle("hidden", !isRegular);
       document.getElementById("image-field").classList.toggle("hidden", !isRegular);
-    }
-
-    function setPresetColor(hex) {
-      document.getElementById("card-text-color").value = hex;
     }
 
     function resetForm() {
@@ -861,11 +848,9 @@
         if (id) {
           statusEl.textContent = "Сохраняем изменения...";
           await callAdminRpc("update", { id, ...payload });
-          statusEl.textContent = "Карточка обновлена!";
         } else {
           statusEl.textContent = "Создаём карточку...";
           await callAdminRpc("create", payload);
-          statusEl.textContent = "Карточка добавлена!";
         }
 
         await fetchCards();
@@ -873,12 +858,10 @@
         switchAdminTab(type);
         resetForm();
         statusEl.textContent = "Готово! Изменения сохранены.";
-            } catch (err) {
-        console.error("Save error:", err);
-        errEl.textContent = "Ошибка: " + (err && err.message ? err.message : JSON.stringify(err));
+      } catch (err) {
+        errEl.textContent = err.message || "Ошибка при сохранении";
         statusEl.textContent = "";
-        }
-
+      } finally {
         saveBtn.disabled = false;
       }
     }
@@ -908,7 +891,6 @@
       const swapIdx = direction === "up" ? idx - 1 : idx + 1;
       if (swapIdx < 0 || swapIdx >= list.length) return;
 
-      // Переставляем элементы и пересчитываем индексы 0..n-1
       const copy = [...list];
       const temp = copy[idx];
       copy[idx] = copy[swapIdx];
@@ -956,15 +938,60 @@
               <div class="admin-item-sub">${escapeHtml(card.description)}</div>
             </div>
             <div class="admin-item-controls">
-              <button class="btn btn-sm" onclick="moveCard('${card.id}', 'up')" ${i === 0 ? "disabled" : ""}>↑</button>
-              <button class="btn btn-sm" onclick="moveCard('${card.id}', 'down')" ${i === list.length - 1 ? "disabled" : ""}>↓</button>
-              <button class="btn btn-sm" onclick="startEditCard('${card.id}')">Изменить</button>
-              <button class="btn btn-danger btn-sm" onclick="deleteCard('${card.id}')">Удалить</button>
+              <button type="button" class="btn btn-sm" data-move="up" data-id="${card.id}" ${i === 0 ? "disabled" : ""}>↑</button>
+              <button type="button" class="btn btn-sm" data-move="down" data-id="${card.id}" ${i === list.length - 1 ? "disabled" : ""}>↓</button>
+              <button type="button" class="btn btn-sm" data-edit="${card.id}">Изменить</button>
+              <button type="button" class="btn btn-danger btn-sm" data-delete="${card.id}">Удалить</button>
             </div>
           </div>
         `)
         .join("");
     }
+
+    // --- ПРИВЯЗКА СОБЫТИЙ И ЗАПУСК ---
+    document.addEventListener("click", (e) => {
+      const navBtn = e.target.closest("[data-nav]");
+      if (navBtn) {
+        navigate(navBtn.getAttribute("data-nav"));
+        return;
+      }
+
+      if (e.target.closest("#brand-home")) {
+        navigate("home");
+        return;
+      }
+
+      const colorDot = e.target.closest("[data-color]");
+      if (colorDot) {
+        document.getElementById("card-text-color").value = colorDot.getAttribute("data-color");
+        return;
+      }
+
+      const moveBtn = e.target.closest("[data-move]");
+      if (moveBtn) {
+        moveCard(moveBtn.getAttribute("data-id"), moveBtn.getAttribute("data-move"));
+        return;
+      }
+
+      const editBtn = e.target.closest("[data-edit]");
+      if (editBtn) {
+        startEditCard(editBtn.getAttribute("data-edit"));
+        return;
+      }
+
+      const delBtn = e.target.closest("[data-delete]");
+      if (delBtn) {
+        deleteCard(delBtn.getAttribute("data-delete"));
+      }
+    });
+
+    document.getElementById("login-btn").addEventListener("click", loginAdmin);
+    document.getElementById("logout-btn").addEventListener("click", logoutAdmin);
+    document.getElementById("card-type").addEventListener("change", toggleCardTypeFields);
+    document.getElementById("card-form").addEventListener("submit", handleSaveCard);
+    document.getElementById("reset-form-btn").addEventListener("click", resetForm);
+    document.getElementById("tab-admin-regular").addEventListener("click", () => switchAdminTab("regular"));
+    document.getElementById("tab-admin-custom").addEventListener("click", () => switchAdminTab("custom"));
 
     window.addEventListener("hashchange", () => {
       const view = (location.hash || "#home").replace("#", "") || "home";
@@ -983,3 +1010,4 @@
   </script>
 </body>
 </html>
+
