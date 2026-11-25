@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TEAR LIST</title>
+  <style>
+    :root {
+      --bg: #0f1115;
+      --surface: #171a21;
+      --surface-2: #1f2430;
+      --border: #2b3140;
+      --text: #f3f5f8;
+      --muted: #9aa3b2;
+      --accent: #5b8cff;
+      --accent-hover: #4778f5;
+      --danger: #ef4444;
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 20px 16px 64px;
+    }
+
+    /* Верхняя навигация */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 28px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .nav-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    button, input, textarea, select {
+      font-family: inherit;
+      color: inherit;
+    }
+
+    .btn {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 9px 14px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+    }
+
+    .btn:hover {
+      background: #272d3b;
+      border-color: #3b4459;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
+    }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.14);
+      border-color: rgba(239, 68, 68, 0.35);
+      color: #fca5a5;
+    }
+
+    .btn-danger:hover {
+      background: rgba(239, 68, 68, 0.25);
+    }
+
+    .btn-sm {
+      padding: 6px 10px;
+      font-size: 13px;
+      border-radius: 8px;
+    }
+
+    /* Главная страница */
+    .home-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 62vh;
+      text-align: center;
+      gap: 28px;
+    }
+
+    .home-title {
+      font-size: clamp(32px, 6vw, 48px);
+      font-weight: 800;
+      letter-spacing: 0.06em;
+    }
+
+    .home-subtitle {
+      color: var(--muted);
+      font-size: 15px;
+      max-width: 440px;
+    }
+
+    .home-buttons {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      width: 100%;
+      max-width: 480px;
+    }
+
+    @media (min-width: 600px) {
+      .home-buttons {
+        grid-template-columns: 1fr 1fr;
+        max-width: 620px;
+      }
+    }
+
+    .big-btn {
+      padding: 28px 22px;
+      border-radius: 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      font-size: 19px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .big-btn:hover {
+      background: var(--surface-2);
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    /* Заголовки разделов */
+    .page-header {
+      margin-bottom: 20px;
+    }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .page-desc {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* Списки карточек (строго вертикальный список, 1 карточка на строку) */
+    .cards-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .regular-card {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .regular-card-img {
+      width: 100%;
+      max-height: 420px;
+      object-fit: cover;
+      display: block;
+      background: var(--surface-2);
+    }
+
+    .regular-card-body {
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .regular-card-title {
+      font-size: 21px;
+      font-weight: 700;
+    }
+
+    .regular-card-text {
+      font-size: 15px;
+      white-space: pre-line;
+    }
+
+    .regular-card-meta {
+      margin-top: 6px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .custom-card {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+    }
+
+    .custom-card-title {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .custom-card-text {
+      font-size: 15px;
+      white-space: pre-line;
+    }
+
+    /* Админка */
+    .admin-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    @media (min-width: 640px) {
+      .form-grid-2 {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field label {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .field input[type="text"],
+    .field input[type="password"],
+    .field textarea,
+    .field select {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 14px;
+      width: 100%;
+    }
+
+    .field textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    .color-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    input[type="color"] {
+      width: 44px;
+      height: 38px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: transparent;
+      cursor: pointer;
+      padding: 2px;
+    }
+
+    .preset-dot {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.25);
+      cursor: pointer;
+    }
+
+    .admin-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .admin-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    @media (min-width: 600px) {
+      .admin-item {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+
+    .admin-item-info {
+      min-width: 0;
+    }
+
+    .admin-item-title {
+      font-weight: 700;
+      font-size: 15px;
+      word-break: break-word;
+    }
+
+    .admin-item-sub {
+      font-size: 13px;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 420px;
+    }
+
+    .admin-item-controls {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .status-msg {
+      margin-top: 12px;
+      font-size: 14px;
+      color: #93c5fd;
+    }
+
+    .error-msg {
+      margin-top: 12px;
+      font-size: 14px;
+      color: #fca5a5;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 16px;
+      color: var(--muted);
+      background: var(--surface);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Шапка -->
+    <header class="topbar">
+      <div class="brand" onclick="navigate('home')">TEAR LIST</div>
+      <nav class="nav-actions">
+        <button class="btn btn-sm" onclick="navigate('home')">Главная</button>
+        <button class="btn btn-sm" onclick="navigate('regular')">Тир-лист</button>
+        <button class="btn btn-sm" onclick="navigate('custom')">Пользовательский</button>
+        <button class="btn btn-sm" onclick="navigate('admin')">Админка</button>
+      </nav>
+    </header>
+
+    <!-- 1. Главная страница -->
+    <section id="view-home" class="home-screen">
+      <div>
+        <h1 class="home-title">TEAR LIST</h1>
+        <p class="home-subtitle">Выбери нужный тир-лист для просмотра</p>
+      </div>
+      <div class="home-buttons">
+        <button class="big-btn" onclick="navigate('regular')">Тир-лист</button>
+        <button class="big-btn" onclick="navigate('custom')">Пользовательский Тир-лист</button>
+      </div>
+    </section>
+
+    <!-- 2. Обычный тир-лист -->
+    <section id="view-regular" class="hidden">
+      <div class="page-header">
+        <h2 class="page-title">Тир-лист</h2>
+        <p class="page-desc">Основной вертикальный список карточек</p>
+      </div>
+      <div id="regular-list" class="cards-stack"></div>
+    </section>
+
+    <!-- 3. Пользовательский тир-лист -->
+    <section id="view-custom" class="hidden">
+      <div class="page-header">
+        <h2 class="page-title">Пользовательский Тир-лист</h2>
+        <p class="page-desc">Текстовые карточки в вертикальном порядке</p>
+      </div>
+      <div id="custom-list" class="cards-stack"></div>
+    </section>
+
+    <!-- 4. Админка -->
+    <section id="view-admin" class="hidden">
+      <div class="page-header">
+        <h2 class="page-title">Административная панель</h2>
+        <p class="page-desc">Управление карточками, фото, цветами и порядком</p>
+      </div>
+
+      <!-- Вход по паролю -->
+      <div id="admin-login-box" class="admin-box">
+        <div class="field">
+          <label for="admin-password-input">Пароль администратора</label>
+          <input type="password" id="admin-password-input" placeholder="Введите пароль" />
+        </div>
+        <div style="margin-top: 14px; display: flex; gap: 10px; align-items: center;">
+          <button class="btn btn-primary" onclick="loginAdmin()">Войти</button>
+        </div>
+        <div id="login-error" class="error-msg"></div>
+      </div>
+
+      <!-- Панель управления после входа -->
+      <div id="admin-panel" class="hidden">
+        <div class="admin-box">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; gap: 10px; flex-wrap: wrap;">
+            <h3 id="form-heading" style="font-size: 18px;">Добавить карточку</h3>
+            <button class="btn btn-sm" onclick="logoutAdmin()">Выйти</button>
+          </div>
+
+          <form id="card-form" onsubmit="handleSaveCard(event)">
+            <input type="hidden" id="edit-card-id" />
+            <input type="hidden" id="existing-image-url" />
+
+            <div class="form-grid form-grid-2">
+              <div class="field">
+                <label for="card-type">Тип карточки</label>
+                <select id="card-type" onchange="toggleCardTypeFields()">
+                  <option value="regular">Обычный тир-лист</option>
+                  <option value="custom">Пользовательский тир-лист</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="card-title">Название</label>
+                <input type="text" id="card-title" required placeholder="Например: Название карточки" />
+              </div>
+            </div>
+
+            <div class="field" style="margin-top: 14px;">
+              <label for="card-description">Основной текст</label>
+              <textarea id="card-description" required placeholder="Основное описание карточки..."></textarea>
+            </div>
+
+            <div id="regular-only-fields" class="form-grid form-grid-2" style="margin-top: 14px;">
+              <div class="field">
+                <label for="card-verification">Верификация</label>
+                <input type="text" id="card-verification" placeholder="Верификация: пример текста" />
+              </div>
+
+              <div class="field">
+                <label for="card-victor">Виктору</label>
+                <input type="text" id="card-victor" placeholder="Виктору: пример текста" />
+              </div>
+            </div>
+
+            <div id="image-field" class="field" style="margin-top: 14px;">
+              <label for="card-image-file">Фотография (для обычного тир-листа)</label>
+              <input type="file" id="card-image-file" accept="image/*" />
+              <div id="current-image-preview" style="font-size: 13px; color: var(--muted);"></div>
+            </div>
+
+            <div class="field" style="margin-top: 14px;">
+              <label>Цвет текста карточки</label>
+              <div class="color-row">
+                <input type="color" id="card-text-color" value="#f3f5f8" />
+                <button type="button" class="preset-dot" style="background:#f3f5f8" onclick="setPresetColor('#f3f5f8')" title="Белый"></button>
+                <button type="button" class="preset-dot" style="background:#fbbf24" onclick="setPresetColor('#fbbf24')" title="Золотой"></button>
+                <button type="button" class="preset-dot" style="background:#34d399" onclick="setPresetColor('#34d399')" title="Зелёный"></button>
+                <button type="button" class="preset-dot" style="background:#60a5fa" onclick="setPresetColor('#60a5fa')" title="Голубой"></button>
+                <button type="button" class="preset-dot" style="background:#f87171" onclick="setPresetColor('#f87171')" title="Красный"></button>
+                <button type="button" class="preset-dot" style="background:#c084fc" onclick="setPresetColor('#c084fc')" title="Фиолетовый"></button>
+              </div>
+            </div>
+
+            <div style="margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap;">
+              <button type="submit" id="save-card-btn" class="btn btn-primary">Сохранить карточку</button>
+              <button type="button" class="btn" onclick="resetForm()">Очистить форму</button>
+            </div>
+
+            <div id="admin-status" class="status-msg"></div>
+            <div id="admin-error" class="error-msg"></div>
+          </form>
+        </div>
+
+        <!-- Список карточек в админке -->
+        <div class="admin-tabs">
+          <button id="tab-admin-regular" class="btn btn-primary btn-sm" onclick="switchAdminTab('regular')">Обычные карточки</button>
+          <button id="tab-admin-custom" class="btn btn-sm" onclick="switchAdminTab('custom')">Пользовательские карточки</button>
+        </div>
+
+        <div id="admin-cards-list" class="cards-stack"></div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const SUPABASE_URL = "https://veklyasmoxzrwdbigsbe.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_wUO5FWkTnDjXKyYxgFRF5A_AN-uB3PD";
+    const STORAGE_BUCKET = "card-images";
+
+    let allCards = [];
+    let adminPassword = sessionStorage.getItem("tearlist_admin_pass") || "";
+    let adminTab = "regular";
+
+    function escapeHtml(str) {
+      if (!str) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function navigate(view) {
+      location.hash = view === "home" ? "" : view;
+      renderView(view);
+    }
+
+    function renderView(view) {
+      const views = ["home", "regular", "custom", "admin"];
+      views.forEach((v) => {
+        document.getElementById(`view-${v}`).classList.toggle("hidden", v !== view);
+      });
+
+      if (view === "regular") renderRegularList();
+      if (view === "custom") renderCustomList();
+      if (view === "admin") initAdminView();
+    }
+
+    async function fetchCards() {
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/cards?select=*&order=position.asc,created_at.asc`,
+        {
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          },
+        }
+      );
+      if (!res.ok) throw new Error("Не удалось загрузить карточки");
+      allCards = await res.json();
+    }
+
+    function renderRegularList() {
+      const container = document.getElementById("regular-list");
+      const items = allCards.filter((c) => c.type === "regular");
+
+      if (!items.length) {
+        container.innerHTML = `<div class="empty-state">Карточек в обычном тир-листе пока нет.</div>`;
+        return;
+      }
+
+      container.innerHTML = items
+        .map((card) => {
+          const color = escapeHtml(card.text_color || "#f3f5f8");
+          const imgHtml = card.image_url
+            ? `<img class="regular-card-img" src="${escapeHtml(card.image_url)}" alt="${escapeHtml(card.title)}" loading="lazy" />`
+            : "";
+
+          return `
+            <article class="regular-card">
+              ${imgHtml}
+              <div class="regular-card-body" style="color: ${color};">
+                <h3 class="regular-card-title">${escapeHtml(card.title)}</h3>
+                <p class="regular-card-text">${escapeHtml(card.description)}</p>
+                <div class="regular-card-meta">
+                  <div><strong>Верификация:</strong> ${escapeHtml(card.verification)}</div>
+                  <div><strong>Виктору:</strong> ${escapeHtml(card.victor)}</div>
+                </div>
+              </div>
+            </article>
+          `;
+        })
+        .join("");
+    }
+
+    function renderCustomList() {
+      const container = document.getElementById("custom-list");
+      const items = allCards.filter((c) => c.type === "custom");
+
+      if (!items.length) {
+        container.innerHTML = `<div class="empty-state">Карточек в пользовательском тир-листе пока нет.</div>`;
+        return;
+      }
+
+      container.innerHTML = items
+        .map((card) => {
+          const color = escapeHtml(card.text_color || "#f3f5f8");
+          return `
+            <article class="custom-card" style="color: ${color};">
+              <h3 class="custom-card-title">${escapeHtml(card.title)}</h3>
+              <p class="custom-card-text">${escapeHtml(card.description)}</p>
+            </article>
+          `;
+        })
+        .join("");
+    }
+
+    async function callAdminRpc(action, payload = {}) {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/admin_manage_cards`, {
+        method: "POST",
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          p_password: adminPassword,
+          p_action: action,
+          p_payload: payload,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || data.error || "Ошибка сервера");
+      }
+      return data;
+    }
+
+    async function uploadImageFile(file) {
+      const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+      const fileName = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+
+      const res = await fetch(`${SUPABASE_URL}/storage/v1/object/${STORAGE_BUCKET}/${fileName}`, {
+        method: "POST",
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          "Content-Type": file.type || "application/octet-stream",
+          "x-upsert": "false",
+        },
+        body: file,
+      });
+
+      if (!res.ok) {
+        const errText = await res.text();
+        throw new Error("Ошибка загрузки фото: " + errText);
+      }
+
+      return `${SUPABASE_URL}/storage/v1/object/public/${STORAGE_BUCKET}/${fileName}`;
+    }
+
+    async function initAdminView() {
+      const loginBox = document.getElementById("admin-login-box");
+      const panel = document.getElementById("admin-panel");
+
+      if (!adminPassword) {
+        loginBox.classList.remove("hidden");
+        panel.classList.add("hidden");
+        return;
+      }
+
+      try {
+        await callAdminRpc("verify");
+        loginBox.classList.add("hidden");
+        panel.classList.remove("hidden");
+        toggleCardTypeFields();
+        renderAdminCardsList();
+      } catch {
+        adminPassword = "";
+        sessionStorage.removeItem("tearlist_admin_pass");
+        loginBox.classList.remove("hidden");
+        panel.classList.add("hidden");
+      }
+    }
+
+    async function loginAdmin() {
+      const input = document.getElementById("admin-password-input");
+      const errEl = document.getElementById("login-error");
+      errEl.textContent = "";
+
+      const pass = input.value.trim();
+      if (!pass) {
+        errEl.textContent = "Введите пароль";
+        return;
+      }
+
+      adminPassword = pass;
+      try {
+        await callAdminRpc("verify");
+        sessionStorage.setItem("tearlist_admin_pass", adminPassword);
+        input.value = "";
+        initAdminView();
+      } catch (e) {
+        adminPassword = "";
+        errEl.textContent = e.message || "Неверный пароль";
+      }
+    }
+
+    function logoutAdmin() {
+      adminPassword = "";
+      sessionStorage.removeItem("tearlist_admin_pass");
+      initAdminView();
+    }
+
+    function toggleCardTypeFields() {
+      const type = document.getElementById("card-type").value;
+      const isRegular = type === "regular";
+      document.getElementById("regular-only-fields").classList.toggle("hidden", !isRegular);
+      document.getElementById("image-field").classList.toggle("hidden", !isRegular);
+    }
+
+    function setPresetColor(hex) {
+      document.getElementById("card-text-color").value = hex;
+    }
+
+    function resetForm() {
+      document.getElementById("edit-card-id").value = "";
+      document.getElementById("existing-image-url").value = "";
+      document.getElementById("card-form").reset();
+      document.getElementById("card-text-color").value = "#f3f5f8";
+      document.getElementById("current-image-preview").textContent = "";
+      document.getElementById("form-heading").textContent = "Добавить карточку";
+      document.getElementById("save-card-btn").textContent = "Сохранить карточку";
+      document.getElementById("admin-error").textContent = "";
+      toggleCardTypeFields();
+    }
+
+    function startEditCard(id) {
+      const card = allCards.find((c) => c.id === id);
+      if (!card) return;
+
+      document.getElementById("edit-card-id").value = card.id;
+      document.getElementById("existing-image-url").value = card.image_url || "";
+      document.getElementById("card-type").value = card.type;
+      document.getElementById("card-title").value = card.title;
+      document.getElementById("card-description").value = card.description;
+      document.getElementById("card-verification").value = card.verification || "";
+      document.getElementById("card-victor").value = card.victor || "";
+      document.getElementById("card-text-color").value = card.text_color || "#f3f5f8";
+      document.getElementById("card-image-file").value = "";
+      document.getElementById("current-image-preview").textContent = card.image_url
+        ? "Текущее фото сохранено (можно выбрать новое для замены)"
+        : "";
+      document.getElementById("form-heading").textContent = "Редактировать карточку";
+      document.getElementById("save-card-btn").textContent = "Обновить карточку";
+      document.getElementById("admin-status").textContent = "";
+      document.getElementById("admin-error").textContent = "";
+
+      toggleCardTypeFields();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    async function handleSaveCard(e) {
+      e.preventDefault();
+      const statusEl = document.getElementById("admin-status");
+      const errEl = document.getElementById("admin-error");
+      const saveBtn = document.getElementById("save-card-btn");
+
+      statusEl.textContent = "";
+      errEl.textContent = "";
+      saveBtn.disabled = true;
+
+      try {
+        const id = document.getElementById("edit-card-id").value;
+        const type = document.getElementById("card-type").value;
+        const title = document.getElementById("card-title").value.trim();
+        const description = document.getElementById("card-description").value.trim();
+        const verification = type === "regular" ? document.getElementById("card-verification").value.trim() : "";
+        const victor = type === "regular" ? document.getElementById("card-victor").value.trim() : "";
+        const textColor = document.getElementById("card-text-color").value;
+        const fileInput = document.getElementById("card-image-file");
+
+        let imageUrl = type === "regular" ? document.getElementById("existing-image-url").value : "";
+
+        if (type === "regular" && fileInput.files && fileInput.files[0]) {
+          statusEl.textContent = "Загружаем фотографию...";
+          imageUrl = await uploadImageFile(fileInput.files[0]);
+        }
+
+        const payload = {
+          type,
+          title,
+          description,
+          verification,
+          victor,
+          image_url: imageUrl,
+          text_color: textColor,
+        };
+
+        if (id) {
+          statusEl.textContent = "Сохраняем изменения...";
+          await callAdminRpc("update", { id, ...payload });
+          statusEl.textContent = "Карточка обновлена!";
+        } else {
+          statusEl.textContent = "Создаём карточку...";
+          await callAdminRpc("create", payload);
+          statusEl.textContent = "Карточка добавлена!";
+        }
+
+        await fetchCards();
+        adminTab = type;
+        switchAdminTab(type);
+        resetForm();
+        statusEl.textContent = "Готово! Изменения сохранены.";
+      } catch (err) {
+        errEl.textContent = err.message || "Ошибка при сохранении";
+        statusEl.textContent = "";
+      } finally {
+        saveBtn.disabled = false;
+      }
+    }
+
+    async function deleteCard(id) {
+      if (!confirm("Удалить эту карточку?")) return;
+      const errEl = document.getElementById("admin-error");
+      const statusEl = document.getElementById("admin-status");
+      errEl.textContent = "";
+      statusEl.textContent = "";
+
+      try {
+        await callAdminRpc("delete", { id });
+        await fetchCards();
+        renderAdminCardsList();
+        statusEl.textContent = "Карточка удалена.";
+      } catch (err) {
+        errEl.textContent = err.message || "Ошибка удаления";
+      }
+    }
+
+    async function moveCard(id, direction) {
+      const list = allCards.filter((c) => c.type === adminTab);
+      const idx = list.findIndex((c) => c.id === id);
+      if (idx === -1) return;
+
+      const swapIdx = direction === "up" ? idx - 1 : idx + 1;
+      if (swapIdx < 0 || swapIdx >= list.length) return;
+
+      // Переставляем элементы и пересчитываем индексы 0..n-1
+      const copy = [...list];
+      const temp = copy[idx];
+      copy[idx] = copy[swapIdx];
+      copy[swapIdx] = temp;
+
+      const items = copy.map((card, index) => ({
+        id: card.id,
+        position: index,
+      }));
+
+      try {
+        await callAdminRpc("reorder", { items });
+        await fetchCards();
+        renderAdminCardsList();
+      } catch (err) {
+        document.getElementById("admin-error").textContent = err.message || "Ошибка сортировки";
+      }
+    }
+
+    function switchAdminTab(tab) {
+      adminTab = tab;
+      document.getElementById("tab-admin-regular").className =
+        tab === "regular" ? "btn btn-primary btn-sm" : "btn btn-sm";
+      document.getElementById("tab-admin-custom").className =
+        tab === "custom" ? "btn btn-primary btn-sm" : "btn btn-sm";
+      renderAdminCardsList();
+    }
+
+    function renderAdminCardsList() {
+      const container = document.getElementById("admin-cards-list");
+      const list = allCards.filter((c) => c.type === adminTab);
+
+      if (!list.length) {
+        container.innerHTML = `<div class="empty-state">В этом разделе пока нет карточек.</div>`;
+        return;
+      }
+
+      container.innerHTML = list
+        .map((card, i) => `
+          <div class="admin-item">
+            <div class="admin-item-info">
+              <div class="admin-item-title" style="color: ${escapeHtml(card.text_color || "#f3f5f8")}">
+                ${i + 1}. ${escapeHtml(card.title)}
+              </div>
+              <div class="admin-item-sub">${escapeHtml(card.description)}</div>
+            </div>
+            <div class="admin-item-controls">
+              <button class="btn btn-sm" onclick="moveCard('${card.id}', 'up')" ${i === 0 ? "disabled" : ""}>↑</button>
+              <button class="btn btn-sm" onclick="moveCard('${card.id}', 'down')" ${i === list.length - 1 ? "disabled" : ""}>↓</button>
+              <button class="btn btn-sm" onclick="startEditCard('${card.id}')">Изменить</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteCard('${card.id}')">Удалить</button>
+            </div>
+          </div>
+        `)
+        .join("");
+    }
+
+    window.addEventListener("hashchange", () => {
+      const view = (location.hash || "#home").replace("#", "") || "home";
+      renderView(["home", "regular", "custom", "admin"].includes(view) ? view : "home");
+    });
+
+    (async function boot() {
+      try {
+        await fetchCards();
+      } catch (e) {
+        console.error(e);
+      }
+      const initialView = (location.hash || "").replace("#", "") || "home";
+      renderView(["home", "regular", "custom", "admin"].includes(initialView) ? initialView : "home");
+    })();
+  </script>
+</body>
+</html>
