@@ -592,19 +592,27 @@
       if (view === "admin") initAdminView();
     }
 
+     function apiHeaders(extra = {}) {
+      return {
+        apikey: SUPABASE_ANON_KEY,
+        ...extra,
+      };
+    }
+
     async function fetchCards() {
-      const res = await fetch(
-        `${SUPABASE_URL}/rest/v1/cards?select=*&order=position.asc,created_at.asc`,
-        {
-          headers: {
-            apikey: SUPABASE_ANON_KEY,
-            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-          },
-        }
-      );
-      if (!res.ok) throw new Error("Не удалось загрузить карточки");
+      const url = `${SUPABASE_URL}/rest/v1/cards?select=*&order=position.asc,created_at.asc`;
+      const res = await fetch(url, {
+        headers: apiHeaders(),
+      });
+
+      if (!res.ok) {
+        const errText = await res.text();
+        throw new Error(`HTTP ${res.status} (${url}): ${errText || "пустой ответ"}`);
+      }
+
       allCards = await res.json();
     }
+
 
     function renderRegularList() {
       const container = document.getElementById("regular-list");
@@ -662,13 +670,12 @@
     }
 
     async function callAdminRpc(action, payload = {}) {
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/admin_manage_cards`, {
+      const url = `${SUPABASE_URL}/rest/v1/rpc/admin_manage_cards`;
+      const res = await fetch(url, {
         method: "POST",
-        headers: {
-          apikey: SUPABASE_ANON_KEY,
-          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        headers: apiHeaders({
           "Content-Type": "application/json",
-        },
+        }),
         body: JSON.stringify({
           p_password: adminPassword,
           p_action: action,
@@ -676,9 +683,16 @@
         }),
       });
 
-      const data = await res.json();
+      const rawText = await res.text();
+      let data = {};
+      try {
+        data = rawText ? JSON.parse(rawText) : {};
+      } catch {
+        data = { message: rawText };
+      }
+
       if (!res.ok) {
-        throw new Error(data.message || data.error || "Ошибка сервера");
+        throw new Error(`RPC HTTP ${res.status}: ${data.message || data.error || rawText || "Ошибка сервера"}`);
       }
       return data;
     }
