@@ -859,10 +859,12 @@
         switchAdminTab(type);
         resetForm();
         statusEl.textContent = "Готово! Изменения сохранены.";
-      } catch (err) {
-        errEl.textContent = err.message || "Ошибка при сохранении";
+            } catch (err) {
+        console.error("Save error:", err);
+        errEl.textContent = "Ошибка: " + (err && err.message ? err.message : JSON.stringify(err));
         statusEl.textContent = "";
-      } finally {
+        }
+
         saveBtn.disabled = false;
       }
     }
